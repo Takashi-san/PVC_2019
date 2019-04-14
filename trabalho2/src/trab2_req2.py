@@ -17,8 +17,9 @@ count = 0
 valid = True
 cap = cv.VideoCapture(0)
 
+print("*** Obtendo os snapshots. ***")
 #while(1):
-while(count < 5):
+while(count < 50):
 	try:
 		ret, frame = cap.read()
 
@@ -42,7 +43,7 @@ while(count < 5):
 
 	        # Desenha e mostra os pontos encontrados.
 			frame = cv.drawChessboardCorners(frame, (7,6), corners2, ret)
-			cv.imshow('snapshot ', frame)
+			cv.imshow('Snapshot ', frame)
 			cv.waitKey(1)
 			count += 1
 	valid = True			
@@ -58,6 +59,38 @@ while(count < 5):
 	'''
 # FIM WHILE OBTER OS SNAPSHOTS =================================================================
 
-cap.release()
+print("*** Obtido os snapshots. ***")
+print("APERTE QUALQUER TECLA")
+
 cv.waitKey(0)
 cv.destroyAllWindows()
+
+print("*** Calibrando. ***")
+
+ret_val, intri_mtx, dist_coef, rvecs, tvecs = cv.calibrateCamera(objpoints, imgpoints, gray.shape[::-1],None,None)
+
+print("*** Calibrado. ***")
+print("*** Salvando arquivos intrisics.xml e distortion.xml. ***")
+
+np.savetxt('intrisics.xml', intri_mtx)
+np.savetxt('distortion.xml', dist_coef)
+
+print("*** Arquivos salvos. ***")
+
+h, w = gray.shape[::-1]
+newcameramtx, roi = cv.getOptimalNewCameraMatrix(intri_mtx, dist_coef, (w,h), 1, (w,h))
+
+print("APERTE ESC PARA SAIR")
+while True:
+	ret, frame = cap.read()
+
+	undist = cv.undistort(frame, intri_mtx, dist_coef, None, newcameramtx)
+
+	#x, y, w, h = roi
+	#undist = undist[y:y+h, x:x+w]
+
+	cv.imshow('undist', undist)
+	cv.imshow('raw', frame)
+	a = cv.waitKey(1)
+	if a == 27:
+		break
