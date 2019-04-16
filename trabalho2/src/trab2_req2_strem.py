@@ -18,7 +18,7 @@ valid = True
 cap = cv.VideoCapture(0)
 
 print("*** Obtendo os snapshots. ***")
-#while(1):
+# Quantidade de snapshots a capturar.
 while(count < 50):
 	try:
 		ret, frame = cap.read()
