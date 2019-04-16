@@ -15,7 +15,7 @@ class tcolor:
 
 # Busca argumentos.
 if len(sys.argv) != 3:
-	print(tcolor.RED + 'Wrong argument. Python3 trab2_req2_img.py path_snapshots_dir path_img_to_undistort' + tcolor.OFF)
+	print(tcolor.RED + 'Wrong argument. Python3 trab2_req2.py path_snapshots_dir path_img_to_undistort' + tcolor.OFF)
 	raise SystemExit	#sys.exit
 source = str(sys.argv[1])
 test = str(sys.argv[2])
@@ -70,8 +70,8 @@ ret_val, intri_mtx, dist_coef, rvecs, tvecs = cv.calibrateCamera(objpoints, imgp
 print("*** Calibrado. ***")
 print("*** Salvando arquivos intrisics.xml e distortion.xml. ***")
 
-np.savetxt('xml_files/intrisics.xml', intri_mtx)
-np.savetxt('xml_files/distortion.xml', dist_coef)
+np.savetxt('data/xml_files/intrinsic.xml', intri_mtx)
+np.savetxt('data/xml_files/distortion.xml', dist_coef)
 
 print("*** Arquivos salvos. ***")
 
