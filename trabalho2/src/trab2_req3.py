@@ -30,8 +30,14 @@ objp[:,:2] = np.mgrid[0:7*3:3,0:6*3:3].T.reshape(-1,2)
 objpoints = [] # Pontos no mundo real em 3D.
 imgpoints = [] # Pontos na imagem em 2D.
 
+# Carrega intrinsecos.
+intrinsic = np.loadtxt("data/xml_files/intrinsic.xml")
+distortion = np.loadtxt("data/xml_files/distortion.xml")
+
 images = glob.glob(source + '*.jpg')
 i = 0
+count = 0;
+dist = np.zeros(3)
 for fname in images:
 #while(1):
 	img = cv.imread(fname)
@@ -51,7 +57,13 @@ for fname in images:
 		img = cv.drawChessboardCorners(img, (7,6), corners2, ret)
 		cv.imshow('Snapshot ', img)
 		cv.waitKey(500)
-		break			
+
+		# Pega as distâncias das 3 primeiras imagens.
+		ret, rot_vec, trans_vec = cv.solvePnP(objp, corners2, intrinsic, distortion)
+		dist[count] = np.linalg.norm([trans_vec[0,0], trans_vec[1,0], trans_vec[2,0]])
+		if count == 2:
+			break			
+		count += 1
 
 # FIM WHILE OBTER OS SNAPSHOTS =================================================================
 
@@ -61,24 +73,25 @@ print(tcolor.YELLOW + "APERTE QUALQUER TECLA" + tcolor.OFF)
 cv.waitKey(0)
 cv.destroyAllWindows()
 
+m_dist = np.sum(dist)/3
+print(tcolor.YELLOW + "=========== distancia media" + tcolor.OFF)
+print(repr(m_dist))
+dp_dist = (np.sum(np.square(dist - m_dist))/3)**(1/2)
+print(tcolor.YELLOW + "=========== desvio padrao" + tcolor.OFF)
+print(repr(dp_dist))
+'''
 print("*** Calibrando. ***")
-
-intrinsic = np.loadtxt("data/xml_files/intrinsic.xml")
-distortion = np.loadtxt("data/xml_files/distortion.xml")
-
 ret, rot_vec, trans_vec = cv.solvePnP(objp, corners2, intrinsic, distortion)
-
 print("*** Calibrado. ***")
 print("=========== rotation matrix")
 matr, jacob = cv.Rodrigues(rot_vec)
 print(matr)
 print("=========== translation vector")
 print(trans_vec)
-print(repr(trans_vec[2,0]))
-
+'''
+'''
 print("*** Salvando arquivos intrisics.xml e distortion.xml. ***")
-
 np.savetxt('data/xml_files/rotation.xml', matr)
 np.savetxt('data/xml_files/translation.xml', trans_vec)
-
 print("*** Arquivos salvos. ***")
+'''
