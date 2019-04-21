@@ -69,7 +69,16 @@ distortion = np.loadtxt("data/xml_files/distortion.xml")
 ret, rot_vec, trans_vec = cv.solvePnP(objp, corners2, intrinsic, distortion)
 
 print("*** Calibrado. ***")
-print("=========== rotation vector")
-print(rot_vec)
+print("=========== rotation matrix")
+matr, jacob = cv.Rodrigues(rot_vec)
+print(matr)
 print("=========== translation vector")
 print(trans_vec)
+print(repr(trans_vec[2,0]))
+
+print("*** Salvando arquivos intrisics.xml e distortion.xml. ***")
+
+np.savetxt('data/xml_files/rotation.xml', matr)
+np.savetxt('data/xml_files/translation.xml', trans_vec)
+
+print("*** Arquivos salvos. ***")

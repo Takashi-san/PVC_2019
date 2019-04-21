@@ -13,7 +13,7 @@ objp[:,:2] = np.mgrid[0:7,0:6].T.reshape(-1,2)
 objpoints = [] # Pontos no mundo real em 3D.
 imgpoints = [] # Pontos na imagem em 2D.
 
-count = 0
+count = 5
 valid = True
 cap = cv.VideoCapture(0)
 
@@ -49,7 +49,7 @@ while(1):
 		break
 	if a == 32:
 		count += 1
-		cv.imwrite("extrincic_cam/notebook3d" + repr(count) + ".jpg", frame)
+		cv.imwrite("data/object/notebook_object" + repr(count) + ".jpg", frame)
 		print("saved!!!!!!!!!!!!!!!!!!!!!!!")
 # FIM WHILE OBTER OS SNAPSHOTS =================================================================
 cap.release()
